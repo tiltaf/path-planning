@@ -1,7 +1,5 @@
 import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
 import matplotlib.animation as animation
-from scipy.misc import imread
 import numpy as np
 from Path_planning import Astar
 
@@ -11,11 +9,10 @@ class Formatter(object):
     def __call__(self,x,y):
         z = self.im.get_array()[int(x), int(y)]
         return 'x={:0.01f}, y={:0.01f}, z={:0.01f}'.format(x,y,z)
-
-filename = 'gulzarnlabbinaryimg.jpg'
-imag = plt.imread(filename)
-imag1 = plt.imread('gulzarwlab.png')
-
+binary_map = 'binary_image.jpg'
+original_map = 'original_image.PNG'
+map1 = plt.imread(binary_map)
+imag = plt.imread(original_map)
 
 def display_path(path,length,width):
 
@@ -26,8 +23,6 @@ def display_path(path,length,width):
 
     def animate(i):
         x, y = patch.center
-    #    x = 50 + 3 * np.sin(np.radians(i))
-    #    y = 50 + 3 * np.cos(np.radians(i))
         x = path[i][1]/10
         y = path[i][0]/10
         patch.center = (x, y)
@@ -47,25 +42,18 @@ def display_path(path,length,width):
                                    init_func=init,
                                    frames=len(path),
                                    interval=12,
-                                   repeat = False,
-                                   blit=True)
-
-    plt.imshow(imag1,zorder=0,  extent=[0.1, width,  length, 0.1])
-    #anim.save('the_movie.mp4', writer = 'ffmpeg', fps=30)
+                                   repeat=False)
+    plt.imshow(imag,zorder=0,  extent=[0.1, width,  length, 0.1])
     plt.show()
     return
 
-
-
-
-
 def getPoints():
-    length,width,c = imag.shape
+    length,width,c = map1.shape
     length = length/10
     width = width/10
-    im1 = imag[:,:,0]
-    im1 = im1/255
-    map_grid  = np.array(im1).tolist()
+    reg_map = map1[:,:,0]
+    reg_map = reg_map/255
+    map_grid = np.array(reg_map).tolist()
     cost = 2
 
     coords =[]
@@ -81,10 +69,11 @@ def getPoints():
             display_path(path,length,width)
         return
     fig = plt.figure()
-    plt.imshow(imag1)
+    plt.imshow(imag)
 
     cid = fig.canvas.mpl_connect('button_press_event', onclick)
     plt.show()
+    return
 
 if __name__ =="__main__":
     getPoints()
